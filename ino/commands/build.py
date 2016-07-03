@@ -148,7 +148,14 @@ class Build(Command):
 
     def setup_flags(self, args):
         board = self.e.board_model(args.board_model)
-        mcu = '-mmcu=' + board['build']['mcu']
+        print(board)
+        print(args)
+        if(args.board_model == 'mega'):
+            mcu = '-mmcu=' + board['menu']['cpu']['atmega2560']['build']['mcu']
+        if(args.board_model == 'nano'):
+            mcu = '-mmcu=' + board['menu']['cpu']['atmega328']['build']['mcu']
+        else:
+            mcu = '-mmcu=' + board['build']['mcu']
         # Hard-code the flags that are essential to building the sketch
         self.e['cppflags'] = SpaceList([
             mcu,
