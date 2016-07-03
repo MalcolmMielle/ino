@@ -51,7 +51,7 @@ class Upload(Command):
         self.discover()
         port = args.serial_port or self.e.guess_serial_port()
         board = self.e.board_model(args.board_model)
-
+        print(args.board_model)
         protocol = board['upload']['protocol']
         if protocol == 'stk500':
             # if v1 is not specifid explicitly avrdude will
@@ -126,13 +126,28 @@ class Upload(Command):
             port = new_port
 
         # call avrdude to upload .hex
-        subprocess.call([
-            self.e['avrdude'],
-            '-C', self.e['avrdude.conf'],
-            '-p', board['build']['mcu'],
-            '-P', port,
-            '-c', protocol,
-            '-b', board['upload']['speed'],
-            '-D',
-            '-U', 'flash:w:%s:i' % self.e['hex_path'],
-        ])
+        print(board['name'])
+        print(board)
+        if(args.board_model == 'nano'):
+            print("UPLOAD NANO")
+            subprocess.call([
+                self.e['avrdude'],
+                '-C', self.e['avrdude.conf'],
+                '-p', board['menu']['cpu']['atmega328']['build']['mcu'],
+                '-P', port,
+                '-c', protocol,
+                '-b', board['menu']['cpu']['atmega328']['upload']['speed'],
+                '-D',
+                '-U', 'flash:w:%s:i' % self.e['hex_path'],
+            ])
+        else:
+            subprocess.call([
+                self.e['avrdude'],
+                '-C', self.e['avrdude.conf'],
+                '-p', board['build']['mcu'],
+                '-P', port,
+                '-c', protocol,
+                '-b', board['upload']['speed'],
+                '-D',
+                '-U', 'flash:w:%s:i' % self.e['hex_path'],
+            ])
